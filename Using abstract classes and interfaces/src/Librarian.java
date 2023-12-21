@@ -41,6 +41,7 @@ public class Librarian {
         }
     }
 
+    // TODO - String is not very safe solution as a parameter here. Can you solve this using lambda expression?
     private void handleBookAction(String action) {
         boolean matchFound = false;
         System.out.print("Enter the title of the book you want to " + action + ": ");
