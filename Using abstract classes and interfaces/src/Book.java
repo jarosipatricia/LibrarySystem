@@ -1,5 +1,8 @@
 // abstract Book class serves as a foundation for common attributes and methods among different book types
 // subclasses aren’t obliged to override all methods (only the abstract ones)
+
+import java.util.Objects;
+
 public abstract class Book {
     private final String name;
     private final double value;
@@ -39,6 +42,28 @@ public abstract class Book {
 
     public int getNumberOfPages() {
         return numberOfPages;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        Book book = (Book) obj;
+        return Double.compare(book.value, value) == 0 &&
+                yearPublished == book.yearPublished &&
+                numberOfPages == book.numberOfPages &&
+                Objects.equals(name, book.name) &&
+                Objects.equals(author, book.author) &&
+                Objects.equals(genre, book.genre);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, value, author, yearPublished, genre, numberOfPages);
     }
 
     // concrete method

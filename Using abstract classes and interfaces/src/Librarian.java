@@ -1,9 +1,18 @@
 import java.util.Scanner;
+import java.util.function.Consumer;
 
 public class Librarian {
     // allows the Librarian object to interact with a single instance of BookLibrary
     private final BookLibrary bookLibrary;
     private Scanner scanner = new Scanner(System.in);
+
+    // another solution for reducing runtime errors caused by incorrect string usage
+    // in interactWithUser -> handleBookAction(BookAction.BORROW);
+    // in handleBookAction -> action == BookAction.BORROW
+    public enum BookAction {
+        BORROW,
+        RETURN
+    }
 
     public Librarian(BookLibrary bookLibrary) {
         this.bookLibrary = bookLibrary;
@@ -26,10 +35,12 @@ public class Librarian {
                     bookLibrary.listBooks();
                     break;
                 case 2:
-                    handleBookAction("borrow");
+                    // lambda expressions are used to perform the borrow or return actions
+                    // directly apply the actions on book using functional interface
+                    handleBookAction(book -> bookLibrary.borrowBook(book));
                     break;
                 case 3:
-                    handleBookAction("return");
+                    handleBookAction(book -> bookLibrary.returnBook(book));
                     break;
                 case 4:
                     System.out.println("Exiting... Bye!");
@@ -41,20 +52,18 @@ public class Librarian {
         }
     }
 
-    // TODO - String is not very safe solution as a parameter here. Can you solve this using lambda expression?
-    private void handleBookAction(String action) {
+    // Consumer is a functional interface, represents an operation that takes a
+    // single input argument
+    // Consumer<Book> represents an action to be performed on a book
+    private void handleBookAction(Consumer<Book> action) {
         boolean matchFound = false;
-        System.out.print("Enter the title of the book you want to " + action + ": ");
+        System.out.print("Enter the title of the book: ");
         String bookTitle = scanner.nextLine();
 
         for (Book book : bookLibrary.getAllBooks()) {
             if (book.getName().equalsIgnoreCase(bookTitle)) { // case-insensitive comparison
                 matchFound = true;
-                if (action.equals("borrow")) {
-                    bookLibrary.borrowBook(book);
-                } else if (action.equals("return")) {
-                    bookLibrary.returnBook(book);
-                }
+                action.accept(book);
                 break; // Exit loop if a match is found
             }
         }
