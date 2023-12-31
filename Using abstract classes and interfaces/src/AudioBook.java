@@ -1,3 +1,5 @@
+import java.util.Objects;
+
 class AudioBook extends Book implements Readable {
     private final double duration;
     private final String reader;
@@ -16,6 +18,27 @@ class AudioBook extends Book implements Readable {
 
     public String getReader() {
         return this.reader;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        AudioBook audioBook = (AudioBook) obj;
+        return Double.compare(audioBook.duration, duration) == 0 &&
+                Objects.equals(reader, audioBook.reader);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), duration, reader);
     }
 
     @Override
